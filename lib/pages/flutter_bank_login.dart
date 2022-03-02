@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_codelab_p5/models/classes.dart';
+import 'package:flutter_codelab_p5/widgets/flutter_bank_main_button.dart';
 
 class FlutterBankLogin extends StatefulWidget {
   const FlutterBankLogin({Key? key}) : super(key: key);
@@ -111,7 +112,23 @@ class _FlutterBankLoginState extends State<FlutterBankLogin> {
                   )
                 ],
               ),
-            ))
+            )),
+            FlutterBankMainButton(
+              label: "Sign In",
+              enabled: true,
+              onTap: () {},
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            FlutterBankMainButton(
+              label: "Register",
+              icon: Icons.account_circle,
+              onTap: () {},
+              backgroundColor: Utils.mainThemeColor.withOpacity(0.05),
+              iconColor: Utils.mainThemeColor,
+              labelColor: Utils.mainThemeColor,
+            )
           ],
         ),
       ),
