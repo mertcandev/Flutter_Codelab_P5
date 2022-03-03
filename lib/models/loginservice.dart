@@ -1,3 +1,5 @@
+// ignore_for_file: unused_local_variable
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -16,6 +18,17 @@ class LoginService extends ChangeNotifier {
 
   String getUserId() {
     return _userId;
+  }
+
+  Future<bool> createUserWithEmailAndPassword(String email, String pwd) async {
+    try {
+      UserCredential userCredentials = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(email: email, password: pwd);
+
+      return true;
+    } on FirebaseAuthException {
+      return false;
+    }
   }
 
   Future<bool> signInWithEmailAndPassword(String email, String password) async {

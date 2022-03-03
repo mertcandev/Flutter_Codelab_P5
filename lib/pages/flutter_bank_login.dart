@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_codelab_p5/models/classes.dart';
 import 'package:flutter_codelab_p5/models/loginservice.dart';
+import 'package:flutter_codelab_p5/pages/flutter_account_registration.dart';
 import 'package:flutter_codelab_p5/pages/flutter_bank_main.dart';
 import 'package:flutter_codelab_p5/widgets/flutter_bank_main_button.dart';
 import 'package:provider/provider.dart';
@@ -164,7 +165,10 @@ class _FlutterBankLoginState extends State<FlutterBankLogin> {
             FlutterBankMainButton(
               label: "Register",
               icon: Icons.account_circle,
-              onTap: () {},
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => FlutterAccountRegistration()));
+              },
               backgroundColor: Utils.mainThemeColor.withOpacity(0.05),
               iconColor: Utils.mainThemeColor,
               labelColor: Utils.mainThemeColor,
