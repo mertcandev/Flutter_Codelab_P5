@@ -20,7 +20,7 @@ class FlutterBankMainButton extends StatelessWidget {
       this.icon,
       this.backgroundColor = Utils.mainThemeColor,
       this.iconColor = Colors.white,
-      this.labelColor = Utils.mainThemeColor})
+      this.labelColor = Colors.white})
       : super(key: key);
 
   @override
@@ -64,7 +64,7 @@ class FlutterBankMainButton extends StatelessWidget {
                         label!,
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                            color: Colors.white, fontWeight: FontWeight.bold),
+                            color: labelColor, fontWeight: FontWeight.bold),
                       ),
                     ]),
               ),

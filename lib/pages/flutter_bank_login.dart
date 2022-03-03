@@ -1,12 +1,13 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, unused_local_variable
 
 import 'package:flutter/material.dart';
 import 'package:flutter_codelab_p5/models/classes.dart';
+import 'package:flutter_codelab_p5/models/loginservice.dart';
+import 'package:flutter_codelab_p5/pages/flutter_bank_main.dart';
 import 'package:flutter_codelab_p5/widgets/flutter_bank_main_button.dart';
+import 'package:provider/provider.dart';
 
 class FlutterBankLogin extends StatefulWidget {
-  const FlutterBankLogin({Key? key}) : super(key: key);
-
   @override
   State<FlutterBankLogin> createState() => _FlutterBankLoginState();
 }
@@ -16,6 +17,15 @@ class _FlutterBankLoginState extends State<FlutterBankLogin> {
   TextEditingController passwordController = TextEditingController();
   @override
   Widget build(BuildContext context) {
+    LoginService loginService =
+        Provider.of<LoginService>(context, listen: false);
+
+    bool validateEmailAndPassword() {
+      return userNameController.value.text.isNotEmpty &&
+          passwordController.value.text.isNotEmpty &&
+          Utils.validateEmail(userNameController.value.text);
+    }
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: Container(
@@ -113,10 +123,46 @@ class _FlutterBankLoginState extends State<FlutterBankLogin> {
                 ],
               ),
             )),
+            Consumer<LoginService>(
+              builder: (context, lService, child) {
+                String errorMsg = lService.getErrorMessage();
+
+                if (errorMsg.isEmpty) {
+                  return SizedBox(height: 40);
+                }
+                return Container(
+                  padding: EdgeInsets.all(10),
+                  child: Row(
+                    children: [
+                      Icon(Icons.warning, color: Colors.red),
+                      SizedBox(width: 10),
+                      Expanded(
+                          child: Text(
+                        errorMsg,
+                        style: TextStyle(color: Colors.red),
+                      ))
+                    ],
+                  ),
+                );
+              },
+            ),
             FlutterBankMainButton(
               label: "Sign In",
-              enabled: true,
-              onTap: () {},
+              enabled: validateEmailAndPassword(),
+              onTap: () async {
+                var username = userNameController.value.text;
+                var pwd = passwordController.value.text;
+
+                bool isLoggedIn = await loginService.signInWithEmailAndPassword(
+                    username, pwd);
+
+                if (isLoggedIn) {
+                  userNameController.clear();
+                  passwordController.clear();
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => FlutterBankMain()));
+                }
+              },
             ),
             SizedBox(
               height: 10,
