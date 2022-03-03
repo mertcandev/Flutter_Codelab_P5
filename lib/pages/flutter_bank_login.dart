@@ -20,12 +20,6 @@ class _FlutterBankLoginState extends State<FlutterBankLogin> {
     LoginService loginService =
         Provider.of<LoginService>(context, listen: false);
 
-    bool validateEmailAndPassword() {
-      return userNameController.value.text.isNotEmpty &&
-          passwordController.value.text.isNotEmpty &&
-          Utils.validateEmail(userNameController.value.text);
-    }
-
     return Scaffold(
       backgroundColor: Colors.white,
       body: Container(
@@ -179,5 +173,18 @@ class _FlutterBankLoginState extends State<FlutterBankLogin> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    userNameController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
+  bool validateEmailAndPassword() {
+    return userNameController.value.text.isNotEmpty &&
+        passwordController.value.text.isNotEmpty &&
+        Utils.validateEmail(userNameController.value.text);
   }
 }
