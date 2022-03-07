@@ -1,4 +1,6 @@
-// ignore_for_file: unused_local_variable
+/* // ignore_for_file: unused_local_variable
+
+import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -44,4 +46,35 @@ class LoginService extends ChangeNotifier {
       return false;
     }
   }
+
+  Future<bool> signOut() {
+    Completer<bool> signOutCompleter = Completer();
+
+    FirebaseAuth.instance.signOut().then((value) {
+      signOutCompleter.complete(true);
+    }, onError: (error) {
+      signOutCompleter.completeError({"error": error});
+    });
+
+    return signOutCompleter.future;
+  }
 }
+
+class DepositService extends ChangeNotifier {
+  double amountToDeposit = 0;
+
+  void setAmountToDeposit(double amount) {
+    amountToDeposit = amount;
+    notifyListeners();
+  }
+
+  void reserDepositService() {
+    amountToDeposit = 0;
+    notifyListeners();
+  }
+
+  bool checkAmountDeposit() {
+    return amountToDeposit > 0;
+  }
+}
+ */

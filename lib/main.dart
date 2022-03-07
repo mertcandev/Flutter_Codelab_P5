@@ -1,6 +1,8 @@
 // ignore_for_file: prefer_const_constructors, use_key_in_widget_constructors, prefer_const_literals_to_create_immutables
 
 import 'package:flutter/material.dart';
+import 'package:flutter_codelab_p5/models/services.dart';
+import 'package:flutter_codelab_p5/models/utilites.dart';
 import 'package:flutter_codelab_p5/models/loginservice.dart';
 import 'package:flutter_codelab_p5/pages/flutter_bank_splashpage.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -18,10 +20,19 @@ void main() async {
           storageBucket: "flutter-bank-project.appspot.com",
           messagingSenderId: "967504387433",
           appId: "1:967504387433:web:d411768f538db37c33b1f8"));
-  runApp(MultiProvider(
-    providers: [ChangeNotifierProvider(create: (_) => LoginService())],
-    child: FlutterBankApp(),
-  ));
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (_) => LoginService(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => FlutterBankService(),
+        )
+      ],
+      child: FlutterBankApp()
+    )
+  );
 }
 
 class FlutterBankApp extends StatelessWidget {
@@ -29,9 +40,12 @@ class FlutterBankApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
-          textTheme: GoogleFonts.poppinsTextTheme(Theme.of(context).textTheme)),
+        textTheme: GoogleFonts.poppinsTextTheme(
+          Theme.of(context).textTheme
+        )
+      ),
       debugShowCheckedModeBanner: false,
-      home: FlutterBankSplash(),
+      home: FlutterBankSplash() 
     );
   }
 }
