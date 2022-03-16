@@ -81,6 +81,10 @@ class FlutterBankService extends ChangeNotifier {
     }
   }
 
+  void resetSelections() {
+    setSelectedAccount(null);
+  }
+
   Future<List<Account>> getAccounts(BuildContext context) {
     LoginService loginService =
         Provider.of<LoginService>(context, listen: false);

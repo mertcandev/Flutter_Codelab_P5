@@ -1,8 +1,9 @@
-// ignore_for_file: unused_local_variable, use_key_in_widget_constructors
+// ignore_for_file: unused_local_variable, use_key_in_widget_constructors, prefer_const_literals_to_create_immutables, prefer_const_constructors
 
 import 'package:flutter/material.dart';
 import 'package:flutter_codelab_p5/models/models.dart';
 import 'package:flutter_codelab_p5/models/services.dart';
+import 'package:flutter_codelab_p5/models/utilites.dart';
 import 'package:flutter_codelab_p5/widgets/account_action_card.dart';
 import 'package:flutter_codelab_p5/widgets/flutter_bank_error.dart';
 import 'package:flutter_codelab_p5/widgets/flutter_bank_loading.dart';
@@ -10,8 +11,10 @@ import 'package:provider/provider.dart';
 
 class AccountActionSelection extends StatelessWidget {
   final String? actionTypeLabel;
+  final Widget? amountChanger;
 
-  const AccountActionSelection({Key? key, this.actionTypeLabel});
+  const AccountActionSelection(
+      {Key? key, this.actionTypeLabel, required this.amountChanger});
 
   @override
   Widget build(BuildContext context) {
@@ -37,11 +40,43 @@ class AccountActionSelection extends StatelessWidget {
                   actionTypeLabel!,
                   style: const TextStyle(color: Colors.grey, fontSize: 15),
                 ),
-                const SizedBox(height: 10),
+                SizedBox(height: 10),
                 AccountActionCard(
                   selectedAccount: selectedAccount,
                   accounts: accounts,
-                )
+                ),
+                Expanded(
+                    child: Visibility(
+                  visible: selectedAccount != null,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Container(
+                        margin: EdgeInsets.only(top: 30),
+                        child: Text(
+                          "Current Balance",
+                          style: TextStyle(color: Colors.grey),
+                        ),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.monetization_on,
+                              color: Utils.mainThemeColor, size: 25),
+                          Text(
+                            selectedAccount != null
+                                ? "\$" +
+                                    selectedAccount.balance!.toStringAsFixed(2)
+                                : "",
+                            style: TextStyle(color: Colors.black, fontSize: 35),
+                          )
+                        ],
+                      ),
+                      Expanded(child: amountChanger!)
+                    ],
+                  ),
+                ))
               ],
             );
           });
