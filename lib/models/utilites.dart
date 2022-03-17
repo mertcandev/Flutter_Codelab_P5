@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_codelab_p5/models/models.dart';
 import 'package:flutter_codelab_p5/models/services.dart';
 import 'package:flutter_codelab_p5/pages/flutter_bank_deposit.dart';
+import 'package:flutter_codelab_p5/pages/flutter_bank_withdrawal.dart';
 import 'package:provider/provider.dart';
 
 class Utils {
@@ -44,8 +45,8 @@ class Utils {
               enabledBorder: InputBorder.none,
               errorBorder: InputBorder.none,
               disabledBorder: InputBorder.none,
-              contentPadding:
-                  EdgeInsets.only(left: 15, bottom: 11, top: 11, right: 15),
+              contentPadding: const EdgeInsets.only(
+                  left: 15, bottom: 11, top: 11, right: 15),
               hintText: hintText),
           controller: controller,
           style: const TextStyle(fontSize: 16),
@@ -85,7 +86,12 @@ class Utils {
       BuildContext context) {
     return [
       FlutterBankBottomBarItem(
-          label: 'Withdraw', icon: Icons.logout, action: () {}),
+          label: 'Withdraw',
+          icon: Icons.logout,
+          action: () {
+            Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => FlutterBankWithdrawal()));
+          }),
       FlutterBankBottomBarItem(
           label: 'Deposit',
           icon: Icons.login,

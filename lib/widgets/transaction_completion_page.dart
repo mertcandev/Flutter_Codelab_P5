@@ -9,16 +9,18 @@ import 'package:flutter_codelab_p5/widgets/transaction_completed.dart';
 import 'package:provider/provider.dart';
 
 class TransactionCompletionPage extends StatelessWidget {
+  
   final bool? isDeposit;
-
-  const TransactionCompletionPage({Key? key, this.isDeposit}) : super(key: key);
+  const TransactionCompletionPage({Key? key, this.isDeposit }):
+    super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    FlutterBankService bankService =
-        Provider.of<FlutterBankService>(context, listen: false);
 
-    Future.delayed(Duration(seconds: 3), () {
+    FlutterBankService bankService = 
+      Provider.of<FlutterBankService>(context, listen: false);
+
+    Future.delayed(const Duration(seconds: 3), () {
       bankService.resetSelections();
       Navigator.of(context).pop();
     });
@@ -32,29 +34,34 @@ class TransactionCompletionPage extends StatelessWidget {
         backgroundColor: Colors.white,
         appBar: AppBar(
           elevation: 0,
-          iconTheme: IconThemeData(color: Utils.mainThemeColor),
+          iconTheme: const IconThemeData(color: Utils.mainThemeColor),
           backgroundColor: Colors.transparent,
-          title: Icon(
-            Icons.savings,
-            color: Utils.mainThemeColor,
-            size: 40,
-          ),
-          centerTitle: true,
+          title: const Icon(Icons.savings, color: Utils.mainThemeColor, size: 40),
+          centerTitle: true
         ),
+
+        // rest of the code omitted for brevity...
         body: Center(
           child: FutureBuilder(
-              future: bankService.performDeposit(context),
-              builder: (context, snapshot) {
-                if (!snapshot.hasData) {
-                  return FlutterBankLoading();
-                }
-                if (snapshot.hasError) {
-                  return FlutterBankError();
-                }
-                return FlutterBankTransactionCompleted();
-              }),
-        ),
-      ),
+            future: isDeposit! ? 
+              bankService.performDeposit(context) : 
+                bankService.performWithdrawal(context),
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return FlutterBankLoading();
+              }
+
+              if (snapshot.hasError) {
+                return FlutterBankError();
+              }
+
+              return FlutterBankTransactionCompleted();
+            }
+          )
+        )
+
+
+      )
     );
   }
 }

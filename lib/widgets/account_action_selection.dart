@@ -14,7 +14,7 @@ class AccountActionSelection extends StatelessWidget {
   final Widget? amountChanger;
 
   const AccountActionSelection(
-      {Key? key, this.actionTypeLabel, required this.amountChanger});
+      {this.actionTypeLabel, required this.amountChanger});
 
   @override
   Widget build(BuildContext context) {
@@ -25,6 +25,7 @@ class AccountActionSelection extends StatelessWidget {
             if (!snapshot.hasData) {
               return FlutterBankLoading();
             }
+
             if (snapshot.hasError) {
               return FlutterBankError();
             }
@@ -33,52 +34,48 @@ class AccountActionSelection extends StatelessWidget {
             List<Account> accounts = snapshot.data as List<Account>;
 
             return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Text(
-                  actionTypeLabel!,
-                  style: const TextStyle(color: Colors.grey, fontSize: 15),
-                ),
-                SizedBox(height: 10),
-                AccountActionCard(
-                  selectedAccount: selectedAccount,
-                  accounts: accounts,
-                ),
-                Expanded(
-                    child: Visibility(
-                  visible: selectedAccount != null,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Container(
-                        margin: EdgeInsets.only(top: 30),
-                        child: Text(
-                          "Current Balance",
-                          style: TextStyle(color: Colors.grey),
-                        ),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.monetization_on,
-                              color: Utils.mainThemeColor, size: 25),
-                          Text(
-                            selectedAccount != null
-                                ? "\$" +
-                                    selectedAccount.balance!.toStringAsFixed(2)
-                                : "",
-                            style: TextStyle(color: Colors.black, fontSize: 35),
-                          )
-                        ],
-                      ),
-                      Expanded(child: amountChanger!)
-                    ],
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Text(actionTypeLabel!,
+                      style: const TextStyle(color: Colors.grey, fontSize: 15)),
+                  const SizedBox(height: 10),
+                  AccountActionCard(
+                    selectedAccount: selectedAccount,
+                    accounts: accounts,
                   ),
-                ))
-              ],
-            );
+                  Expanded(
+                      child: Visibility(
+                    visible: selectedAccount != null,
+                    child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Container(
+                            margin: const EdgeInsets.only(top: 30),
+                            child: const Text('Current Balance',
+                                style: TextStyle(color: Colors.grey)),
+                          ),
+                          Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Icon(Icons.monetization_on,
+                                    color: Utils.mainThemeColor, size: 25),
+                                Text(
+                                    selectedAccount != null
+                                        ? '\$' +
+                                            selectedAccount.balance!
+                                                .toStringAsFixed(2)
+                                        : '',
+                                    style: const TextStyle(
+                                        color: Colors.black, fontSize: 35))
+                              ]),
+                          Expanded(
+                            child: amountChanger!,
+                          )
+                        ]),
+                  ))
+                ]);
           });
     });
   }

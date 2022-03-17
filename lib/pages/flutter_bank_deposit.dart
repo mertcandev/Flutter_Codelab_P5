@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, duplicate_ignore
 
 import 'package:flutter/material.dart';
 import 'package:flutter_codelab_p5/models/services.dart';
@@ -11,8 +11,6 @@ import 'package:flutter_codelab_p5/widgets/transaction_completion_page.dart';
 import 'package:provider/provider.dart';
 
 class FlutterBankDeposit extends StatelessWidget {
-  const FlutterBankDeposit({Key? key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -23,48 +21,42 @@ class FlutterBankDeposit extends StatelessWidget {
         return Future.value(true);
       },
       child: Scaffold(
-        backgroundColor: Colors.white,
-        appBar: AppBar(
-          elevation: 0,
-          iconTheme: IconThemeData(color: Utils.mainThemeColor),
-          backgroundColor: Colors.transparent,
-          title: Icon(Icons.savings, color: Utils.mainThemeColor, size: 40),
-          centerTitle: true,
-        ),
-        body: Container(
-          padding: EdgeInsets.all(20),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            // ignore: prefer_const_literals_to_create_immutables
-            children: [
-              AccountActionHeader(headerTitle: "Deposit", icon: Icons.login),
-              Expanded(
-                  child: Column(
-                children: [
-                  AccountActionSelection(
-                    actionTypeLabel: "To",
+          backgroundColor: Colors.white,
+          appBar: AppBar(
+              elevation: 0,
+              iconTheme: const IconThemeData(color: Utils.mainThemeColor),
+              backgroundColor: Colors.transparent,
+              title: const Icon(Icons.savings,
+                  color: Utils.mainThemeColor, size: 40),
+              centerTitle: true),
+          body: Container(
+              padding: const EdgeInsets.all(20),
+              child:
+                  Column(mainAxisAlignment: MainAxisAlignment.start, children: [
+                const AccountActionHeader(
+                    headerTitle: 'Deposit', icon: Icons.login),
+                Expanded(
+                  child: AccountActionSelection(
+                    actionTypeLabel: 'To',
                     amountChanger: AccountDepositSlider(),
                   ),
-                  Consumer<DepositService>(builder: (context, service, child) {
-                    return FlutterBankMainButton(
-                        enabled: service.checkAmountToDeposit(),
-                        label: "Make Deposit",
-                        onTap: service.checkAmountToDeposit()
-                            ? () {
-                                Navigator.of(context).pushReplacement(
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            TransactionCompletionPage(
-                                                isDeposit: true)));
-                              }
-                            : null);
-                  })
-                ],
-              ))
-            ],
-          ),
-        ),
-      ),
+                ),
+                Consumer<DepositService>(
+                    builder: (context, depositService, child) {
+                  return FlutterBankMainButton(
+                      enabled: depositService.checkAmountToDeposit(),
+                      label: 'Make Deposit',
+                      onTap: (depositService.checkAmountToDeposit()
+                          ? () {
+                              Navigator.of(context).pushReplacement(
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          const TransactionCompletionPage(
+                                              isDeposit: true)));
+                            }
+                          : null));
+                })
+              ]))),
     );
   }
 }

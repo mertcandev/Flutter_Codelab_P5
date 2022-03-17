@@ -39,11 +39,9 @@ class LoginService extends ChangeNotifier {
 
   Future<bool> createUserWithEmailAndPassword(String email, String pwd) async {
     try {
-      UserCredential userCredentials = await FirebaseAuth.instance
+      await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: pwd);
-
-      return true; // or userCredentials != null;
-
+      return true;
     } on FirebaseAuthException {
       return false;
     }
@@ -75,14 +73,14 @@ class FlutterBankService extends ChangeNotifier {
   void setSelectedAccount(Account? acct) {
     selectedAccount = acct;
     notifyListeners();
-
-    Account? getSelectedAccount() {
-      return selectedAccount;
-    }
   }
 
   void resetSelections() {
     setSelectedAccount(null);
+  }
+
+  Account? getSelectedAccount() {
+    return selectedAccount;
   }
 
   Future<List<Account>> getAccounts(BuildContext context) {
@@ -96,8 +94,7 @@ class FlutterBankService extends ChangeNotifier {
 
     FirebaseFirestore.instance
         .collection('accounts')
-        .doc('b0h0MHlCwoeOmEO6HBy6SgNVB6g2') // use the one from YOUR project!
-        //.doc(userId)
+        .doc(userId)
         .collection('user_accounts')
         .get()
         .then((QuerySnapshot collection) {
@@ -111,7 +108,7 @@ class FlutterBankService extends ChangeNotifier {
         accountsCompleter.complete(accounts);
       });
     }, onError: (error) {
-      accountsCompleter.completeError({"error": error});
+      accountsCompleter.completeError({'error': error});
     });
 
     return accountsCompleter.future;
@@ -129,23 +126,49 @@ class FlutterBankService extends ChangeNotifier {
     int amountToDeposit = depositService.amountToDeposit.toInt();
 
     DocumentReference doc = FirebaseFirestore.instance
-        .collection("accounts")
+        .collection('accounts')
         .doc(userId)
-        .collection("user_accounts")
+        .collection('user_accounts')
         .doc(selectedAccount!.id!);
 
-    doc.update({"balance": selectedAccount!.balance! + amountToDeposit}).then(
+    doc.update({'balance': selectedAccount!.balance! + amountToDeposit}).then(
         (value) {
       depositService.resetDepositService();
       depositComplete.complete(true);
     }, onError: (error) {
-      depositComplete.completeError({"error": error});
+      depositComplete.completeError({'error': error});
     });
 
     return depositComplete.future;
   }
 
-  getSelectedAccount() {}
+  Future<bool> performWithdrawal(BuildContext context) {
+    Completer<bool> withdrawComplete = Completer();
+
+    LoginService loginService =
+        Provider.of<LoginService>(context, listen: false);
+    String userId = loginService.getUserId();
+
+    WithdrawalService wService =
+        Provider.of<WithdrawalService>(context, listen: false);
+    int amountToWithdraw = wService.amountToWithdraw.toInt();
+
+    DocumentReference doc = FirebaseFirestore.instance
+        .collection('accounts')
+        .doc(userId)
+        .collection('user_accounts')
+        .doc(selectedAccount!.id!);
+
+    doc.update({'balance': selectedAccount!.balance! - amountToWithdraw}).then(
+        (value) {
+      wService.resetWithdrawalService();
+      withdrawComplete.complete(true);
+    }, onError: (error) {
+      withdrawComplete.completeError({'error': error});
+    });
+
+    return withdrawComplete.future;
+  }
 }
 
 class DepositService extends ChangeNotifier {
@@ -163,5 +186,23 @@ class DepositService extends ChangeNotifier {
 
   bool checkAmountToDeposit() {
     return amountToDeposit > 0;
+  }
+}
+
+class WithdrawalService extends ChangeNotifier {
+  double amountToWithdraw = 0;
+
+  void setAmountToWithdraw(double amount) {
+    amountToWithdraw = amount;
+    notifyListeners();
+  }
+
+  void resetWithdrawalService() {
+    amountToWithdraw = 0;
+    notifyListeners();
+  }
+
+  bool checkAmountToWithdraw() {
+    return amountToWithdraw > 0;
   }
 }

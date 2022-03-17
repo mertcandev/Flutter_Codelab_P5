@@ -2,7 +2,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_codelab_p5/models/services.dart';
-import 'package:flutter_codelab_p5/pages/flutter_bank_deposit.dart';
 import 'package:flutter_codelab_p5/pages/flutter_bank_splashpage.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -19,27 +18,38 @@ void main() async {
           storageBucket: "flutter-bank-project.appspot.com",
           messagingSenderId: "967504387433",
           appId: "1:967504387433:web:d411768f538db37c33b1f8"));
-  runApp(MultiProvider(providers: [
-    ChangeNotifierProvider(
-      create: (_) => LoginService(),
-    ),
-    ChangeNotifierProvider(
-      create: (_) => FlutterBankService(),
-    ),
-    ChangeNotifierProvider(
-      create: (_) => DepositService(),
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (_) => LoginService(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => FlutterBankService(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => DepositService(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => WithdrawalService(),
+        ),
+      ],
+      child: FlutterBankApp()
     )
-  ], child: FlutterBankApp()));
+  );
 }
 
 class FlutterBankApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        theme: ThemeData(
-            textTheme:
-                GoogleFonts.poppinsTextTheme(Theme.of(context).textTheme)),
-        debugShowCheckedModeBanner: false,
-        home: FlutterBankDeposit());
+      theme: ThemeData(
+        textTheme: GoogleFonts.poppinsTextTheme(
+          Theme.of(context).textTheme
+        )
+      ),
+      debugShowCheckedModeBanner: false,
+      home: FlutterBankSplash() 
+    );
   }
 }

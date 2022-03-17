@@ -1,9 +1,8 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, unused_local_variable
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, unused_local_variable, use_key_in_widget_constructors
 
 import 'package:flutter/material.dart';
 import 'package:flutter_codelab_p5/models/services.dart';
 import 'package:flutter_codelab_p5/models/utilites.dart';
-import 'package:flutter_codelab_p5/models/loginservice.dart';
 import 'package:flutter_codelab_p5/pages/flutter_account_registration.dart';
 import 'package:flutter_codelab_p5/pages/flutter_bank_main.dart';
 import 'package:flutter_codelab_p5/widgets/flutter_bank_main_button.dart';
@@ -101,7 +100,6 @@ class FlutterBankLoginState extends State<FlutterBankLogin> {
                       controller: passwordController,
                       style: const TextStyle(fontSize: 16),
                     )),
-
                 Consumer<LoginService>(builder: (context, lService, child) {
                   String errorMsg = lService.getErrorMessage();
 
