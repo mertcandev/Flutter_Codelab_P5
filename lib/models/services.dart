@@ -5,8 +5,9 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_codelab_p5/models/models.dart';
 import 'package:provider/provider.dart';
+
+import 'package:flutter_codelab_p5/models/models.dart';
 
 class LoginService extends ChangeNotifier {
   String _userId = '';
@@ -69,6 +70,7 @@ class LoginService extends ChangeNotifier {
 
 class FlutterBankService extends ChangeNotifier {
   Account? selectedAccount;
+  List<Expense> expenses = [];
 
   void setSelectedAccount(Account? acct) {
     selectedAccount = acct;
@@ -81,6 +83,68 @@ class FlutterBankService extends ChangeNotifier {
 
   Account? getSelectedAccount() {
     return selectedAccount;
+  }
+
+  void addExpense(BuildContext context) {
+    LoginService loginService =
+        Provider.of<LoginService>(context, listen: false);
+    String userId = loginService.getUserId();
+
+    CollectionReference expensesCollection = FirebaseFirestore.instance
+        .collection('accounts')
+        .doc(userId)
+        .collection('user_expenses');
+
+    expensesCollection
+        .add({
+          'amount': 100,
+          'timestamp': DateTime.now().toIso8601String(),
+          'name': 'Sample Expense'
+        })
+        .then((value) => print('document added'))
+        .catchError((error) => print('error during adding'));
+  }
+
+  void deleteExpense(BuildContext context, String expenseId) {
+    LoginService loginService =
+        Provider.of<LoginService>(context, listen: false);
+    String userId = loginService.getUserId();
+
+    DocumentReference expenseToDelete = FirebaseFirestore.instance
+        .collection('accounts')
+        .doc(userId)
+        .collection('user_expenses')
+        .doc(expenseId);
+
+    expenseToDelete
+        .delete()
+        .then((value) => print('document deleted'))
+        .catchError((error) => print('error while deleting document'));
+  }
+
+  Stream<List<Expense>> getExpenses(BuildContext context) {
+    LoginService loginService =
+        Provider.of<LoginService>(context, listen: false);
+    String userId = loginService.getUserId();
+
+    var controller = StreamController<List<Expense>>();
+
+    FirebaseFirestore.instance
+        .collection('accounts')
+        .doc(userId)
+        .collection('user_expenses')
+        .snapshots()
+        .listen((QuerySnapshot collection) {
+      expenses.clear();
+      for (var doc in collection.docs) {
+        var expenseJson = doc.data() as Map<String, dynamic>;
+        expenses.add(Expense.fromJson(expenseJson, doc.id));
+      }
+
+      controller.add(expenses);
+    });
+
+    return controller.stream;
   }
 
   Future<List<Account>> getAccounts(BuildContext context) {
@@ -204,5 +268,26 @@ class WithdrawalService extends ChangeNotifier {
 
   bool checkAmountToWithdraw() {
     return amountToWithdraw > 0;
+  }
+}
+
+class Expense {
+  String? name;
+  double? amount;
+  String? timestamp;
+  String? id;
+  Expense({
+    this.name,
+    this.amount,
+    this.timestamp,
+    this.id,
+  });
+
+  factory Expense.fromJson(Map<String, dynamic> json, String docId) {
+    return Expense(
+        id: docId,
+        name: json["name"],
+        amount: json["amount"],
+        timestamp: json["timestamp"]);
   }
 }
